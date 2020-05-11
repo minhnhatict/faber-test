@@ -1,0 +1,75 @@
+<form #form="ngForm" (ngSubmit)="save()">
+  <div class="modal-header">
+    <h5 class="modal-title">
+      {{'menu.airport' | translate}}
+    </h5>
+    <button type="button" class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="activeModal.dismiss('')">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <!--name-->
+    <div class="form-group">
+      <label>
+        {{'airport.name' | translate}}
+      </label>
+      <input class="form-control"
+             [(ngModel)]="airport.name"
+             [ngClass]="airportName.touched && airportName.valid? 'border border-success' : ''"
+             maxlength="10"
+             #airportName="ngModel"
+             name="airportName"
+             required>
+      <span *ngIf="error" class="text-danger">{{error}}</span>
+      <span class="text-danger"
+            *ngIf="airportName.touched && airportName.invalid">
+        {{'error.mandatory' | translate: { field: ('airport.name' ) | translate } }}
+      </span>
+    </div>
+
+    <!--country-->
+    <div class="form-group">
+      <label>
+        {{'airport.country' | translate}}
+      </label>
+      <input id="typeahead-basic" type="text"
+             class="form-control"
+             name="country"
+             [resultFormatter]="resultFormatter"
+             [inputFormatter]="inputFormatter"
+             [(ngModel)]="airport.country"
+             [editable]='false'
+             [ngbTypeahead]="searchCountry"/>
+
+    </div>
+
+    <!--description-->
+    <div class="form-group">
+      <label>Ghi chú</label>
+      <input class="form-control"
+             [(ngModel)]="airport.description"
+             name="description"/>
+    </div>
+  </div>
+
+  <div class="card-footer justify-content-between">
+    <button type="button"
+            (click)="activeModal.dismiss()"
+            class="btn btn-default" >
+      <span>
+         {{'close' | translate}}
+      </span>
+    </button>
+
+    <button type="submit"
+            [disabled]="!form.form.valid"
+            class="btn btn-primary float-right" data-dismiss="modal">
+      <span>
+        {{'save' | translate}}
+      </span>
+    </button>
+  </div>
+</form>

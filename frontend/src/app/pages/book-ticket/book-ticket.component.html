@@ -1,0 +1,428 @@
+<div>
+  <div class="bg-blue">
+    <div class="row">
+      <div class="col-sm-6">
+        <h4 class="float-left m-3">
+          <a routerLink="/" class="text-decoration-none text-white">
+            <i class="fas fa-arrow-circle-left"></i>
+          </a>
+          <span class="m-4">Đặt chuyến bay</span>
+        </h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="row pl-3">
+    <div class="col-9">
+      <form class="pl-3 mt-3" (ngSubmit)="search()" *ngIf="showSelectFlight">
+        <h5 class="font-weight-bold">Bước 1: Chọn chuyến bay</h5>
+
+        <!--return type-->
+        <div class="row ml-1 mt-3">
+          <div class="form-group">
+            <label>Chọn loại vé</label>
+            <div>
+              <div class="form-check-inline">
+                <label class="form-check-label">
+                  <input type="radio"
+                         class="form-check-input"
+                         value="bio"
+                         [(ngModel)]="order.returnType"
+                         name="returnType">Khứ hồi
+                </label>
+              </div>
+
+              <div class="form-check-inline ml-3">
+                <label class="form-check-label">
+                  <input type="radio"
+                         class="form-check-input"
+                         value="oneway"
+                         [(ngModel)]="order.returnType"
+                         name="returnType">Một chiều
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <!--departure airport-->
+          <div class="col-3">
+            <div class="form-group">
+              <label>Nơi Khởi hành </label>
+              <input [typeahead]="departureAirportList"
+                     [typeaheadMinLength]="0"
+                     [typeaheadSelectFirstItem]="true"
+                     typeaheadOptionField="name"
+                     name="fromAirportId"
+                     [isAnimated]="true"
+                     autocomplete="off"
+                     [(ngModel)]="departureAirportName"
+                     (ngModelChange)="searchArrivalAirports()"
+                     placeholder="Nhập để tìm nơi khởi hành"
+                     class="form-control"/>
+            </div>
+          </div>
+          <!--departure date-->
+          <div class="col-3">
+            <div class="form-group">
+              <label> Ngày đi</label>
+              <input type="text"
+                     placeholder="Click vào để chọn"
+                     class="form-control"
+                     name='departureDate'
+                     autocomplete="off"
+                     [(ngModel)]="order.departureDate"
+                     [minDate]="today"
+                     bsDatepicker>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <!--arrival airport-->
+          <div class="col-3">
+            <div class="form-group">
+              <label> Điểm đến </label>
+              <input [typeahead]="arrivalAirportList"
+                     [typeaheadMinLength]="0"
+                     [isAnimated]="true"
+                     [typeaheadSelectFirstItem]="true"
+                     typeaheadOptionField="name"
+                     name="arrival"
+                     autocomplete="off"
+                     [(ngModel)]="arrivalAirportName"
+                     placeholder="Nhập để tìm nơi đến"
+                     class="form-control"/>
+            </div>
+          </div>
+
+          <!--arrival date-->
+          <div class="col-3" *ngIf="order.returnType === 'bio'">
+            <div class="form-group">
+              <label>Ngày về </label>
+              <input type="text"
+                     placeholder="Click vào để chọn"
+                     class="form-control"
+                     name='departureDate'
+                     [minDate]="today"
+                     autocomplete="off"
+                     [(ngModel)]="order.arrivalDate"
+                     bsDatepicker>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <!--search button-->
+          <div class="col-12">
+            <button class="btn btn-sm btn-info">
+              <i class="fas fa-search"></i>
+              <span class="ml-2">Tìm chuyến bay</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="row mt-5" *ngIf="departureFlightList && departureFlightList.length > 0">
+          <div class="col-12">
+            <h5 class="font-weight-bold">Danh sách chiều đi</h5>
+          </div>
+          <div class="col-12">
+            <table class="table table-head-fixed table-condensed">
+              <thead>
+              <tr>
+                <th>#</th>
+                <th>Nơi khởi hành</th>
+                <th>Nơi đến</th>
+                <th>Giờ khởi hành</th>
+                <th>Giá vé</th>
+                <th>Ghi chú</th>
+                <th>Chọn mua</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <tr *ngFor="let flight of departureFlightList; let i = index">
+                <td>{{i + 1}}</td>
+                <td>{{flight?.departureAirport?.name}}</td>
+                <td>{{flight?.arrivalAirport?.name}}</td>
+                <td>{{flight?.departureDateTime | date :'dd/MM/yyyy HH:mm'}}</td>
+                <td>{{flight?.price | number:'.'}} VND</td>
+                <td>{{flight?.description}}</td>
+                <td>
+                  <div class="form-check-inline">
+                    <input class="form-check-input"
+                           [value]="flight"
+                           [(ngModel)]="order.departureFlight"
+                           name="departureFlight" type="radio"/>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+
+        <div class="row mt-3" *ngIf="arrivalFlightList && arrivalFlightList.length > 0">
+          <div class="col-12">
+            <h5 class="font-weight-bold">Danh sách chiều về</h5>
+          </div>
+          <div class="col-12">
+            <table class="table table-head-fixed table-condensed">
+              <thead>
+              <tr>
+                <th>#</th>
+                <th>Nơi khởi hành</th>
+                <th>Nơi đến</th>
+                <th>Giờ khởi hành</th>
+                <th>Giá vé</th>
+                <th>Ghi chú</th>
+                <th>Chọn mua</th>
+              </tr>
+              </thead>
+
+              <tbody>
+              <tr *ngFor="let flight of arrivalFlightList; let i = index">
+                <td>{{i + 1}}</td>
+                <td>{{flight?.departureAirport?.name}}</td>
+                <td>{{flight?.arrivalAirport?.name}}</td>
+                <td>{{flight?.departureDateTime | date :'dd/MM/yyyy HH:mm'}}</td>
+                <td>{{flight?.price | number:'.'}} VND</td>
+                <td>{{flight?.description}}</td>
+                <td>
+                  <div class="form-check-inline">
+                    <input class="form-check-input"
+                           [value]="flight"
+                           [(ngModel)]="order.arrivalFlight"
+                           name="arrivalFlight" type="radio"/>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="row mt-3 pb-3" *ngIf="departureFlightList.length > 0 || arrivalFlightList.length > 0">
+          <div class="col-12">
+            <button class="btn btn-sm btn-success" (click)="switchToPersonInfo()">
+              <i class="fas fa-angle-double-right"></i>
+              <span class="ml-2">Tiếp tục</span>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div *ngIf="showPersonInfo" class="p-3 mt-2">
+        <h5 class="font-weight-bold">Bước 2: Nhập thông tin cá nhân</h5>
+
+        <form class="mt-3 p-2 bg-white rounded border border-info"
+              *ngFor="let customerForm of customerFormGroupList; let i = index"
+              [formGroup]="customerForm">
+          <span class="font-weight-bold text-gray">Hành khách thứ {{i + 1}}</span>
+          <div class="row mt-3">
+            <!--customer type-->
+            <div class="col-2">
+              <div class="form-group">
+                <label>Loại hành khách</label>
+                <select class="form-control" formControlName="type">
+                  <option value="normal">Hành khách thường</option>
+                  <option value="child">Trẻ em (dưới 7 tuổi)</option>
+                </select>
+              </div>
+            </div>
+
+            <!--full name-->
+            <div class="col-3">
+              <div class="form-group">
+                <label>Họ và tên</label>
+                <input class="form-control"
+                       formControlName="fullName"
+                       placeholder="Nguyễn Văn A"/>
+              </div>
+            </div>
+
+            <!--birth date-->
+            <div class="col-3">
+              <div class="form-group">
+                <label>Ngày sinh</label>
+                <input class="form-control"
+                       formControlName="birthDate"
+                       placeholder="Click vào để chọn"
+                       bsDatepicker/>
+              </div>
+            </div>
+
+            <!--CMND or passport-->
+            <div class="col-3" *ngIf="customerForm.get('type').value === 'normal'">
+              <div class="form-group">
+                <label>CMDN hoặc Passport</label>
+                <input class="form-control"
+                       formControlName="personId"/>
+              </div>
+            </div>
+
+            <!--phone-->
+            <div class="col-2" *ngIf="customerForm.get('type').value === 'normal'">
+              <div class="form-group">
+                <label>Số điện thoại</label>
+                <input formControlName="phone"
+                       class="form-control"/>
+              </div>
+            </div>
+
+            <!--email-->
+            <div class="col-3" *ngIf="customerForm.get('type').value === 'normal'">
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email"
+                       formControlName="email"
+                       class="form-control"/>
+              </div>
+            </div>
+
+            <!--remove customer button-->
+            <div class="col-3" *ngIf="i > 0">
+              <div class="form-group">
+                <label style="color: transparent">a</label>
+                <br/>
+                <button class="btn btn-danger btn-sm" (click)="removeCustomer(i)">
+                  <i class="fas fa-times-circle"></i>
+                  <span class="ml-2">Xoá</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div class="row">
+          <!--done -->
+          <div class="col-2">
+            <div class="form-group">
+              <label style="color: transparent">eqdqdqwa</label>
+              <br/>
+              <button class="btn btn-sm btn-success" (click)="switchToSummary()">
+                <i class="fas fa-check-circle"></i>
+                <span class="ml-2">Hoàn thành </span>
+              </button>
+            </div>
+          </div>
+
+          <!--add customer-->
+          <div class="col-3">
+            <div class="form-group">
+              <label style="color: transparent">eqdqdqwa</label>
+              <br/>
+              <button class="btn btn-sm btn-outline-info" (click)="addCustomer()">
+                <i class="fas fa-plus-circle"></i>
+                <span class="ml-2">Thêm hành khách </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--summary info before finish-->
+      <div *ngIf="showSummary" class="p-3 mt-2">
+        <h5 class="font-weight-bold">Bước 3: Xác nhận thông tin</h5>
+        <p class="text-gray">Vui lòng đọc kỹ và xác nhận lại thông tin của quý khách trước khi tiến hành thanh toán</p>
+
+        <div *ngIf="order.departureFlight">
+          <div class="font-weight-bold">Thông tin chiều đi:</div>
+
+          <div class="row">
+            <div class="col-12">
+              <span>{{order?.departureFlight?.departureAirport?.name}}
+                - {{order?.departureFlight?.arrivalAirport?.name}}, </span>
+              <span
+                class="ml-2">Khởi hành: {{order?.departureFlight?.departureDateTime | date :'dd/MM/yyyy HH:mm'}}</span>
+            </div>
+          </div>
+
+          <div class="font-weight-bold mt-3">Thông tin chiều về:</div>
+          <div class="row">
+            <div class="col-12">
+              <span>{{order?.arrivalFlight?.departureAirport?.name}}
+                - {{order?.arrivalFlight?.arrivalAirport?.name}}</span>
+              <span
+                class="ml-2">Khởi hành: {{order?.arrivalFlight?.departureDateTime | date :'dd/MM/yyyy HH:mm'}}</span>
+            </div>
+          </div>
+
+          <!--customer list-->
+          <div class="font-weight-bold mt-3">Thông tin hành khách</div>
+          <div class="row">
+            <div class="col-12" *ngFor="let customerForm of customerFormGroupList">
+              <span>{{customerForm.get('fullName').value}}</span>
+              <span
+                *ngIf="customerForm.get('personId').value"> - CMND (Passport): {{customerForm.get('personId').value}}</span>
+              <span> - Sinh ngày: {{customerForm.get('birthDate').value | date :'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="col-12 mt-3">
+              <span class="font-weight-bold">Người lớn:</span>
+              <span> {{order.totalAdult}} </span>
+            </div>
+            <div class="col-12" *ngIf="order.totalChildren > 0">
+              <span class="font-weight-bold">Trẻ em (dưới 7 tuổi):</span>
+              <span> {{order.totalChildren}} </span>
+            </div>
+            <div class="col-12" *ngIf="order.totalSenior > 0">
+              <span class="font-weight-bold">Người lớn tuổi (trên 65 tuổi):</span>
+              <span> {{order.totalSenior}} </span>
+            </div>
+          </div>
+
+          <div class="row mt-5">
+            <!--save order buttons-->
+            <button class="btn btn-sm btn-success"
+                    (click)="saveOrder()">
+              <i class="fas fa-check-circle"></i>
+              <span class="ml-2">Xác nhận</span>
+            </button>
+
+            <!--back to person buttons-->
+            <button class="btn btn-sm btn-outline-info ml-3"
+                    (click)="backToPersonInfo()">
+              <i class="fas fa-arrow-circle-left"></i>
+              <span class="ml-2">Quay lại</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!--right summary info-->
+    <div class="col-3 bg-white rounded pl-3" *ngIf="showPersonInfo">
+      <div class="row mt-3">
+        <div class="col-12">
+          <h5 class="font-weight-bold">Chuyến bay đã chọn</h5>
+        </div>
+
+        <div class="col-12">
+          <span class="font-weight-bold"> Chiều đi: </span>
+        </div>
+
+        <div class="col-12">
+          {{order?.departureFlight?.departureAirport?.name}} - {{order?.departureFlight?.arrivalAirport?.name}}
+        </div>
+        <div class="col-12">
+          {{order?.departureFlight?.departureDateTime | date :'dd/MM/yyyy HH:mm'}}
+        </div>
+      </div>
+
+      <div class="row mt-2" *ngIf="order?.arrivalFlight">
+        <div class="col-12 mt-3">
+          <span class="font-weight-bold"> Chiều về: </span>
+        </div>
+        <div class="col-12">
+          {{order?.arrivalFlight?.departureAirport?.name}} - {{order?.arrivalFlight?.arrivalAirport?.name}}
+        </div>
+        <div class="col-12">
+          {{order?.arrivalFlight?.departureDateTime | date :'dd/MM/yyyy HH:mm'}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

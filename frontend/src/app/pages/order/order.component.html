@@ -1,0 +1,47 @@
+<div class="bg-white">
+  <div class="bg-blue">
+    <div class="row">
+      <div class="col-sm-6">
+        <h4 class="float-left m-3">
+          <a routerLink="/" class="text-decoration-none text-white">
+            <i class="fas fa-arrow-circle-left"></i>
+          </a>
+          <span class="m-4">Danh sách Hoá đơn</span>
+        </h4>
+      </div>
+    </div>
+  </div>
+
+  <div class="row p-3 mt-5">
+    <div class="col-lg-12 col-12">
+      <table class="table table-condensed table-head-fixed">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Loại</th>
+          <th>Nơi Khởi hành</th>
+          <th>Nơi đến</th>
+          <th>Ngày xuất phát</th>
+          <th>Tên khách hàng</th>
+          <th>Tổng tiền</th>
+          <th>Ghi chú</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let order of orderList; let i = index">
+          <td>{{i + 1}}</td>
+          <td>{{getOrderType(order)}}</td>
+          <td>{{order.departureFlight?.departureAirport.name}}</td>
+          <td>{{order.departureFlight?.arrivalAirport.name}}</td>
+          <td>{{order.departureFlight?.departureDateTime | date :'dd/MM/yyyy HH:mm'}}</td>
+          <td>{{order.customerList[0]?.fullName }}</td>
+          <td>{{calculateTotalPrice(order) | number:'.'}} VND</td>
+          <td>{{order.departureFlight?.description}}</td>
+        </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

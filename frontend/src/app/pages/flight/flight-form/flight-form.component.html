@@ -1,0 +1,223 @@
+<form (ngSubmit)="save()" #form="ngForm">
+  <div class="modal-header">
+    <h5 class="modal-title">
+      {{'menu.flight-design' | translate}}
+    </h5>
+    <button type="button" class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+            (click)="activeModal.dismiss('')">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <!-- price-->
+    <div class="row pl-3 mt-3">
+      <div class="col-4">
+        <div class="form-group">
+          <label>
+            {{ 'flight.price' | translate }} (VND) <span class="text-danger">*</span>
+          </label>
+          <input type="number"
+                 class="form-control"
+                 name="price"
+                 min="5000"
+                 required
+                 #price="ngModel"
+                 [(ngModel)]="flightForm.price">
+          <span *ngIf="price.touched && price.invalid" class="text-danger">
+            {{'error.mandatory' | translate: {field: ('flight.price') | translate} }}
+          </span>
+
+        </div>
+      </div>
+      <!-- description-->
+      <div class="col-4">
+        <div class="form-group">
+          <label>
+            {{ 'flight.seat-number' | translate}} <span class="text-danger">*</span>
+          </label>
+          <input type="number"
+                 class="form-control"
+                 name="description"
+                 #seatQuantity="ngModel"
+                 [min]="0"
+                 required
+                 [(ngModel)]="flightForm.seatQuantity">
+          <span *ngIf="seatQuantity.touched && seatQuantity.invalid" class="text-danger">
+            {{'error.mandatory' | translate: {field: ('flight.seat-number') | translate} }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="row pl-3 pt-3">
+      <!--departure-->
+      <div class="col-4">
+        <div class="form-group">
+          <label>
+            {{ 'flight.departure-airport' | translate}} <span class="text-danger">*</span>
+          </label>
+          <input id="typeahead-basic" type="text"
+                 class="form-control"
+                 (change)="checkValidation()"
+                 name='departureAirport'
+                 #departureAirport="ngModel"
+                 [resultFormatter]="resultAirportFormatter"
+                 [inputFormatter]="inputAirportFormatter"
+                 [(ngModel)]="flightForm.departureAirport"
+                 [editable]='false'
+                 required
+                 [ngbTypeahead]="searchAirport"/>
+          <span *ngIf="departureAirport.touched && departureAirport.invalid" class="text-danger">
+            {{'error.mandatory' | translate: {field: ('flight.departure-airport') | translate} }}
+          </span>
+        </div>
+      </div>
+
+      <!--departure date-->
+      <div class="col-4">
+        <div class="form-group">
+          <label>
+            {{ 'flight.departure-date' | translate}} <span class="text-danger">*</span>
+          </label>
+
+          <div class="input-group">
+            <input class="form-control"
+                   placeholder="yyyy-mm-dd"
+                   #departureDate="ngModel"
+                   #d="ngbDatepicker"
+                   name="departureDate"
+                   [(ngModel)]="flightForm.departureDate"
+                   ngbDatepicker>
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary fas fa-calendar"
+                      (click)="d.toggle()"
+                      type="button">
+              </button>
+            </div>
+          </div>
+
+            <span class="text-danger text-sm" *ngIf="departureDate.touched && departureDate.invalid">
+            {{'error.mandatory' | translate: {field: ('flight.departure-date') | translate} }}
+          </span>
+        </div>
+      </div>
+
+      <!--departure time-->
+      <div class="col-4 pl-3">
+        <div class="form-group">
+          <label>
+            {{ 'flight.departure-time' | translate}} <span class="text-danger">*</span>
+          </label>
+          <ngb-timepicker (change)="checkValidation()"
+                          name="departureTime"
+                          [spinners]="false"
+                          #departureTime="ngModel"
+                          [(ngModel)]="flightForm.departureTime">
+          </ngb-timepicker>
+
+        </div>
+      </div>
+
+    </div>
+    <div class="row pl-3">
+      <!--departure Airport-->
+      <div class="col-4">
+        <div class="form-group">
+          <label>
+            {{ 'flight.arrival-airport' | translate}} <span class="text-danger">*</span>
+          </label>
+          <input type="text"
+                 class="form-control"
+                 name='arrivalAirport'
+                 #arrivalAirport="ngModel"
+                 (change)="checkValidation()"
+                 [resultFormatter]="resultAirportFormatter"
+                 [inputFormatter]="inputAirportFormatter"
+                 [(ngModel)]="flightForm.arrivalAirport"
+                 [editable]='false'
+                 required
+                 [ngbTypeahead]="searchAirport"/>
+          <span class="text-danger text-sm"
+                *ngIf="duplicateAirport">
+            {{'flight.error.duplicate-airport' | translate}}
+          </span>
+
+          <span *ngIf="arrivalAirport.touched && arrivalAirport.invalid"
+                class="text-danger">
+            {{'error.mandatory' | translate: {field: ('flight.arrival-airport') | translate} }}
+          </span>
+
+        </div>
+      </div>
+
+      <!--arrival date-->
+      <div class="col-4">
+        <div class="form-group">
+          <label>
+            {{ 'flight.arrival-date' | translate}} <span class="text-danger">*</span>
+          </label>
+
+          <div class="input-group">
+            <input class="form-control" placeholder="yyyy-mm-dd"
+                   #arrivalDate="ngModel"
+                   #arrivalDateP="ngbDatepicker"
+                   name="arrivalDate"
+                   [(ngModel)]="flightForm.arrivalDate"
+                   ngbDatepicker>
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary fas fa-calendar"
+                      (click)="arrivalDateP.toggle()"
+                      type="button">
+              </button>
+            </div>
+          </div>
+
+          <span *ngIf="arrivalDate.touched && arrivalDate.invalid" class="text-danger">
+            {{'error.mandatory' | translate: {field: ('flight.arrival-date') | translate} }}
+          </span>
+
+          <span class="text-danger text-sm" *ngIf="duplicateDatetime">
+            {{'flight.error.duplicate-datetime' | translate}}
+          </span>
+          <span class="text-danger text-sm" *ngIf="earlyArrival">
+            {{'flight.error.early-arrival' | translate}}
+          </span>
+        </div>
+      </div>
+
+      <!--departure time-->
+      <div class="col-3 pl-3">
+        <div class="form-group">
+          <label>
+            {{ 'flight.arrival-time' | translate}} <span class="text-danger">*</span>
+          </label>
+          <ngb-timepicker name="arrivalTime"
+                          (change)="checkValidation()"
+                          [spinners]="false"
+                          #departureTime="ngModel"
+                          [(ngModel)]="flightForm.arrivalTime">
+          </ngb-timepicker>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card-footer justify-content-between">
+    <button type="button"
+            (click)="activeModal.dismiss()"
+            class="btn btn-default">
+      <span> {{'close' | translate}} </span>
+    </button>
+
+    <button class="btn btn-primary btn-sm float-right"
+            type="submit"
+            [disabled]="form.invalid || duplicateAirport || duplicateDatetime">
+      <i class="fas fa-check-circle"></i>
+      <span class="ml-1"> {{ 'save' | translate}}</span>
+    </button>
+  </div>
+</form>

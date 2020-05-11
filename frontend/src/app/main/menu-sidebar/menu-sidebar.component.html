@@ -1,0 +1,137 @@
+<aside #mainSidebar class="main-sidebar sidebar-dark-primary elevation-4">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <!-- Sidebar user (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="info">
+        <a *ngIf="userProfile" class="d-block">{{userProfile?.username}}</a>
+        <a *ngIf="!userProfile" class="d-block">Welcome to Faber</a>
+        <div class="pt-2">
+          <a (click)="switchLanguage('vi')">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQoH1t2s0ubZLaE7bNysb5Q8tUO2Rvw8qGQ4SOGeOpacbpbxt5u&usqp=CAU">
+          </a>
+
+          <span class="text-white"> | </span>
+
+          <a (click)="switchLanguage('en')">
+            <img src="https://image.flaticon.com/icons/png/128/330/330425.png" />
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- Sidebar Menu for not logged in user-->
+    <nav class="mt-2" *ngIf="!userProfile">
+      <ul
+        class="nav nav-pills nav-sidebar flex-column"
+        data-widget="treeview"
+        role="menu"
+        data-accordion="false">
+
+        <li class="nav-header text-white text-bold pl-2">
+          　NGƯỜI DÙNG
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="/login">
+            <i class="nav-icon fas fa-sign-out-alt"></i>
+            <p>Login</p>
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+
+    <!-- Sidebar Menu for Admin-->
+    <nav class="mt-2" *ngIf="userProfile?.authorities && userProfile?.authorities[0].authority === 'ROLE_ADMIN' ">
+      <ul
+        class="nav nav-pills nav-sidebar flex-column"
+        data-widget="treeview"
+        role="menu"
+        data-accordion="false">
+        <!--project-->
+        <li class="nav-header text-white text-bold pl-2">
+          {{('menu.operation' | translate) | uppercase}}
+        </li>
+
+        <li class="nav-item">
+          <a routerLink="/" class="nav-link text-white">
+            <i class="nav-icon fas fa-chart-line"></i>
+            <p>
+              Dashboard
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/book-ticket" class="nav-link text-white">
+            <i class="nav-icon fas fa-ticket-alt"></i>
+            <p>
+              {{('menu.book-ticket' | translate) | titlecase}}
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/order" class="nav-link text-white">
+            <i class="nav-icon fas fa-dollar-sign"></i>
+            <p>
+              {{('menu.orders' | translate) | titlecase}}
+            </p>
+          </a>
+        </li>
+
+        <div>
+
+          <!--META DATA-->
+          <li class="nav-header text-white text-bold pl-2">
+            {{('menu.metadata' | translate) | uppercase}}
+          </li>
+
+          <li class="nav-item">
+            <a routerLink="/airport" class="nav-link text-white">
+              <i class="nav-icon fas fas fa-map-marked-alt"></i>
+              <p class="ml-2">
+                {{'menu.airport' | translate | titlecase}}
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a routerLink="/flight" class="nav-link text-white">
+              <i class="nav-icon fas fas fa-plane-departure	"></i>
+              <p class="ml-2">
+                {{'menu.flight-design' | translate | titlecase}}
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a routerLink="/flight" class="nav-link text-white">
+              <i class="nav-icon fas fa-user-friends	"></i>
+              <p class="ml-2">
+                {{'menu.customer' | translate | titlecase}}
+              </p>
+            </a>
+          </li>
+
+          <!--user actions-->
+          <li class="nav-header text-white text-bold pl-2">
+            {{'menu.user'| translate | uppercase}}
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link text-white" href="/logout">
+              <i class="nav-icon fas fa-sign-out-alt"></i>
+              <span class="ml-2">
+                {{'logout' | translate}}
+              </span>
+            </a>
+          </li>
+        </div>
+      </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+  </div>
+  <!-- /.sidebar -->
+</aside>

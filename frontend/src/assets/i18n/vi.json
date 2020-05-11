@@ -1,0 +1,45 @@
+{
+  "Title": "Exemple de traduction",
+  "menu": {
+    "operation": "Tác vụ",
+    "book-ticket": "Đặt vé",
+    "orders": "Hoá đơn",
+    "metadata": "Dữ liệu",
+    "user": "Người dùng",
+    "airport": "Dữ liệu Sân bay",
+    "flight-design": "Thiết kế chuyến bay",
+    "customer": "Thông tin Khách hàng"
+  },
+  "airport": {
+    "name": "Tên Sân bay",
+    "description": "Ghi chú",
+    "country": "Quốc gia"
+  },
+  "flight": {
+    "price": "Giá vé",
+    "seat-number": "Số ghế",
+    "departure-airport": "Sân bay khởi hành",
+    "arrival-airport": "Sân bay đến",
+    "departure-date": "Ngày khởi hành",
+    "arrival-date": "Ngày đến",
+    "departure-time": "Giờ khởi hành",
+    "arrival-time": "Giờ đến",
+    "error": {
+      "duplicate-airport": "Sân bay đi và đến không được giống nhau.",
+      "duplicate-datetime": "Thời điểm đi và đến không được giông nhau.",
+      "early-arrival": "Thời điểm đi phải sớm hơn Thời điểm đến."
+    }
+  },
+  "error": {
+    "mandatory": "Vui lòng nhập {{field}}"
+  },
+  "add": "Thêm",
+  "delete": "Xoá",
+  "save": "Lưu",
+  "edit": "Sửa",
+  "close": "Đóng",
+  "success": "Thành công",
+  "failed": "Thất bại",
+  "login": "Đăng nhập",
+  "logout": "Đăng xuất"
+}

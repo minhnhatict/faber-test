@@ -1,0 +1,79 @@
+<div class="bg-white">
+  <div class="bg-blue">
+
+    <!--title-->
+    <div class="row">
+      <div class="col-sm-6">
+        <h4 class="float-left m-3">
+          <a routerLink="/" class="text-decoration-none text-white">
+            <i class="fas fa-arrow-circle-left"></i>
+          </a>
+          <span class="m-4">
+            {{'menu.flight-design' | translate }}
+          </span>
+        </h4>
+      </div>
+    </div>
+  </div>
+
+  <!-- add button-->
+  <div class="row p-3">
+    <div class="col-12 mt-3">
+      <button class="btn btn-success btn-sm"
+              (click)="openForm(null)">
+        <i class="fas fa-plus-circle"></i>
+        <span class="ml-1">
+          {{'add' | translate}}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!--flight list-->
+  <div class="row p-3 mt-3">
+    <div class="col-lg-12 col-12">
+      <table class="table table-condensed table-head-fixed">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th><i class="fas fa-plane-departure mr-1"></i> Khởi hành</th>
+          <th><i class="fas fa-plane-arrival mr-1"></i> Đến nơi</th>
+          <th><i class="fas fa-dollar-sign mr-1"></i> Giá vé (1 chiều)</th>
+          <th>
+            <i class="fas fa-chair mr-1"></i>
+            <span>{{'flight.seat-number' | translate}}</span>
+          </th>
+          <th></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let flight of flightList; let i=index">
+          <td>{{flight?.id}}</td>
+          <td>{{flight?.departureAirport?.name}} ({{flight?.departureAirport?.country?.code}})
+            - {{flight?.departureDateTime | date :'dd/MM/yyyy HH:mm'}}</td>
+          <td>{{flight?.arrivalAirport?.name}} ({{flight?.arrivalAirport?.country?.code}})
+            - {{flight?.arrivalDateTime | date :'dd/MM/yyyy HH:mm'}}</td>
+          <td>{{flight?.price | number:'.' }} VND</td>
+          <td>{{ flight?.seatQuantity }}</td>
+          <td>
+            <!--edit button-->
+            <button class="btn btn-info btn-sm " (click)="openForm(flight)">
+              <i class="fas fa-edit"></i>
+              <span class="ml-1"> {{'edit' | translate}} </span>
+            </button>
+
+            <!--delete button-->
+            <button class="btn btn-danger btn-sm ml-3"
+                    (click)="delete(flight)">
+              <i class="fas fa-trash"></i>
+              <span class="ml-1"> {{'delete' | translate}} </span>
+            </button>
+
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

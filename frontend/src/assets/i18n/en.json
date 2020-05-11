@@ -1,0 +1,45 @@
+{
+  "Title": "Translation example",
+  "menu": {
+    "operation": "Operation",
+    "book-ticket": "Book ticket",
+    "orders": "Orders",
+    "metadata": "Meta Data",
+    "user": "User",
+    "airport": "Airport List",
+    "flight-design": "Flight Data",
+    "customer": "Customer Management"
+  },
+  "airport": {
+    "name": "Airport name",
+    "description": "Description",
+    "country": "Country"
+  },
+  "flight": {
+    "price": "Price",
+    "seat-number": "Seat quantity",
+    "departure-airport": "Departure Airport",
+    "arrival-airport": "Arrival Airport",
+    "departure-date": "Departure date",
+    "arrival-date": "Arrival date",
+    "departure-time": "Departure Time",
+    "arrival-time": "Arrival Time",
+    "error": {
+      "duplicate-airport": "Departure airport and arrival airport must be different.",
+      "duplicate-datetime": "Departure date time and arrival date time must be different.",
+      "early-arrival": "Departure date time must be before arrival date time."
+    }
+  },
+  "error": {
+    "mandatory": "Please input {{field}}"
+  },
+  "add": "Add",
+  "delete": "Delete",
+  "save": "Save",
+  "edit": "Edit",
+  "close": "Close",
+  "success": "Successfully",
+  "failed": "Failed",
+  "login": "Login",
+  "logout": "Logout"
+}
